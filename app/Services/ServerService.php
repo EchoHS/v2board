@@ -395,7 +395,7 @@ class ServerService
             $apiHostArg = escapeshellarg((string) $apiHost);
             $apiKeyArg = escapeshellarg((string) $apiKey);
             $servers[$k]['install_command'] = sprintf(
-                'wget -N https://raw.githubusercontent.com/wyx2685/v2node/master/script/install.sh && bash install.sh --api-host %s --node-id %d --api-key %s',
+                'wget -N https://raw.githubusercontent.com/EchoHS/v2node/master/script/install.sh && bash install.sh --api-host %s --node-id %d --api-key %s',
                 $apiHostArg,
                 $nodeId,
                 $apiKeyArg
@@ -443,12 +443,15 @@ class ServerService
     {
         $routeIds = array_map('intval', $routeIds);
         $order = implode(',', $routeIds);
-        $routes = ServerRoute::select(['id', 'match', 'action', 'action_value'])
+        $routes = ServerRoute::select(['id', 'remarks', 'match', 'action', 'action_value'])
             ->whereIn('id', $routeIds)
             ->orderByRaw("FIELD(id, $order)")
             ->get();
         foreach ($routes as $k => $route) {
             $array = json_decode($route->match, true);
+            if ($route->action === 'route_user' && is_array($array)) {
+                $array = User::whereIn('email', $array)->pluck('uuid')->toArray();
+            }
             if (is_array($array)) $routes[$k]['match'] = $array;
         }
         return $routes;

@@ -100727,6 +100727,7 @@
                 dns: "\u6307\u5b9aDNS\u670d\u52a1\u5668\u8fdb\u884c\u89e3\u6790",
                 route: "\u6307\u5b9a\u51fa\u7ad9\u670d\u52a1\u5668(\u57df\u540d\u76ee\u6807)",
                 route_ip: "\u6307\u5b9a\u51fa\u7ad9\u670d\u52a1\u5668(IP\u76ee\u6807)",
+                route_user: "\u6307\u5b9a\u51fa\u7ad9\u670d\u52a1\u5668(\u7528\u6237)",
                 default_out: "\u81ea\u5b9a\u4e49\u9ed8\u8ba4\u51fa\u7ad9"
             }
         }
@@ -111243,7 +111244,7 @@
                         if (["route_ip", "block_ip"].includes(action)) {
                             return "127.0.0.1(\u5355\u4e00\u5339\u914d)\n10.0.0.0/8(\u8303\u56f4\u5339\u914d)\ngeoip:cn(\u9884\u5b9a\u4e49\u5217\u8868\u5339\u914d)";
                         }
-                        return "example.com(\u5173\u952e\u5b57\u5339\u914d)\ndomain:example.com(\u5b50\u57df\u540d\u5339\u914d)\ngeosite:netflix(\u9884\u5b9a\u4e49\u57df\u540d\u5217\u8868)";
+                        if (action === "route_user" || (action && action.indexOf("user") !== -1)) { return "example@example.com(\u6ce8\u518c\u90ae\u7bb1)"; } return "example.com(\u5173\u952e\u5b57\u5339\u914d)\ndomain:example.com(\u5b50\u57df\u540d\u5339\u914d)\ngeosite:netflix(\u9884\u5b9a\u4e49\u57df\u540d\u5217\u8868)";
                     })(),
                     value: "object" === typeof this.state.route.match ? null === (e = this.state.route.match) || void 0 === e ? void 0 : e.join("\n") : null === (t = this.state.route.match) || void 0 === t ? void 0 : null === (n = t.split(",")) || void 0 === n ? void 0 : n.join("\n"),
                     onChange: e=>{
@@ -111284,6 +111285,8 @@
                 }, b["a"].routeActionText["route"]), f.a.createElement(v["a"].Option, {
                     value: "route_ip"
                 }, b["a"].routeActionText["route_ip"]), f.a.createElement(v["a"].Option, {
+                    value: "route_user"
+                }, b["a"].routeActionText["route_user"]), f.a.createElement(v["a"].Option, {
                     value: "default_out"
                 }, b["a"].routeActionText["default_out"])))), "dns" === this.state.route.action && f.a.createElement("div", {
                     className: "form-group"
@@ -111299,7 +111302,7 @@
                             })
                         })
                     }
-                })), ("route" === this.state.route.action || "route_ip"=== this.state.route.action || "default_out"=== this.state.route.action) && f.a.createElement("div", {
+                })), (["route", "route_ip", "route_user", "default_out"].indexOf(this.state.route.action) !== -1) && f.a.createElement("div", {
                     className: "form-group"
                 }, f.a.createElement("label", {
                     for: "example-text-input-alt"
