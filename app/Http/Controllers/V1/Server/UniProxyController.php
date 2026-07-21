@@ -146,9 +146,15 @@ class UniProxyController extends Controller
         }
 
         $updateAt = time();
-        $cacheKeys = array_map(function ($uid) {
-            return 'ALIVE_IP_USER_' . $uid;
-        }, array_keys($data));
+
+        $cacheKeys = [];
+        $keyMap = [];
+        foreach ($data as $uid => $_) {
+            if (!is_numeric($uid)) continue;
+            $key = 'ALIVE_IP_USER_' . $uid;
+            $cacheKeys[] = $key;
+            $keyMap[$uid] = $key;
+        }
 
         if (empty($cacheKeys)) {
             return response([
@@ -163,7 +169,7 @@ class UniProxyController extends Controller
             if (!is_numeric($uid) || !is_array($ips)) {
                 continue; // 跳过无效数据
             }
-            $key = 'ALIVE_IP_USER_' . $uid;
+            $key = $keyMap[$uid];
             $ips_array = $cachedData[$key] ?? [];
 
             // 更新节点数据
