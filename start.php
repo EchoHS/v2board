@@ -57,6 +57,10 @@ function run()
 {
     global $kernel;
 
+    // Workerman closes the console streams in daemon mode.
+    $_SERVER['VAR_DUMPER_FORMAT'] = 'html';
+    $_SERVER['PHP_SELF'] ??= '/index.php';
+
     ob_start();
 
     $response = $kernel->handle(

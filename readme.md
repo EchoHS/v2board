@@ -12,7 +12,7 @@
 
     git remote set-url origin https://github.com/EchoHS/v2board  
     git checkout master  
-    ./update.sh  
+    git pull --ff-only origin master && ./update.sh
 
 
 按以下步骤配置缓存驱动为redis，然后刷新设置缓存，重启队列:
@@ -26,7 +26,7 @@
 
 # **V2Board**
 
-- PHP7.3+
+- PHP 8.2+
 - Composer
 - MySQL5.5+
 - Redis

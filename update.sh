@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [ ! -d ".git" ]; then
   echo "Please deploy using Git."
   exit 1
@@ -10,15 +12,11 @@ if ! command -v git &> /dev/null; then
     exit 1
 fi
 
-git config --global --add safe.directory $(pwd)
-git fetch --all && git reset --hard origin/master && git pull origin master
-rm -rf composer.lock composer.phar
+git pull --ff-only origin master
 wget https://github.com/composer/composer/releases/latest/download/composer.phar -O composer.phar
-php composer.phar update -vvv
+php composer.phar update --no-dev --optimize-autoloader
 
-php_main_version=$(php -v | head -n 1 | cut -d ' ' -f 2 | cut -d '.' -f 1)
-if [ $php_main_version -ge 8 ]; then
-    php composer.phar require joanhey/adapterman
+if [ -f workerman.webman.php.pid ]; then
     if ! php -m | grep -q "pcntl"; then
         echo "Adding pcntl extension to cli-php.ini"
         sed -i '/extension=redis.so/a extension=pcntl.so' cli-php.ini
